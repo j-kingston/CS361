@@ -117,6 +117,25 @@ def create(self, _):
         return "Game Created"
     return "Game Failed"
 
+@need_admin
+def save(self, _):
+    try:
+        saved = self.game.save_game_state()
+    except IndexError:
+        return sc.save_state_fail
+    if saved:
+        return "Save Successful"
+    return "Save Failed"
+
+@need_admin
+def load(self, _):
+    try:
+        loaded = self.game.save_load_state()
+    except IndexError:
+        return sc.save_state_fail
+    if loaded:
+        return "Load Successful"
+    return "Load Failed"
 
 @need_self
 def edit_team(self, args):
@@ -151,7 +170,7 @@ def edit_team(self, args):
 
 
 commands = {"login": login, "addteam": add_team, "addlandmark": add_landmark, "removeteam": remove_team, "start": start,
-            "create": create, "logout": logout, "editteam": edit_team, "removelandmark": remove_landmark}
+            "create": create, "save": save, "load" : load, "logout": logout, "editteam": edit_team, "removelandmark": remove_landmark}
 
 
 class CLI:

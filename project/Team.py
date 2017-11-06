@@ -3,6 +3,7 @@ from abc import ABC, abstractmethod
 from GameMaker import UserABC
 
 
+
 class TeamI(ABC):
     @abstractmethod
     def login(self, password):

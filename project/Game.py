@@ -1,10 +1,11 @@
 import unittest
 import datetime
 import time
+import pickle
 from abc import ABC, abstractmethod
-
 from Landmark import LandmarkFactory
 from Team import TeamFactory
+
 
 
 class GameInterface(ABC):
@@ -60,6 +61,13 @@ class GameInterface(ABC):
     def quit_question(self,team,password):
         pass
 
+    @abstractmethod
+    def save_game_state(self):
+        pass
+
+    @abstractmethod
+    def load_game_state(self):
+        pass
 
 class Game(GameInterface):
     def __init__(self):
@@ -162,6 +170,29 @@ class Game(GameInterface):
     def get_status(self, team):
         return ""
 
+    def save_game_state(self):
+        if not self.started:
+            try:
+                with open("Game.txt", "wb") as gameState:
+                    pickle.dump([self.teams], gameState)
+                    pickle.dump([self.landmarks], gameState)
+                return True
+            except pickle.UnpicklingError:
+                return False
+        return False
+
+    def load_game_state(self):
+        if not self.started:
+            try:
+                with open("Game.txt", "rb") as gameState:
+                    loadedTeams = pickle.load(gameState)
+                    loadedLandmarks = pickle.load(gameState)
+                    self.teams = loadedTeams
+                    self.landmarks = loadedLandmarks
+                    return True
+            except pickle.UnpicklingError:
+                return False
+        return False
 
 def make_game(*args, **kwargs):
     """This function should only ever return classes that implement GameInterface"""
